@@ -34,7 +34,7 @@ header .sp{width:1px;height:24px;background:var(--bd);margin:0 4px}
 #cm{z-index:31}
 .dm button,.dm label,#cm button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:none;padding:9px 12px;border-radius:6px;cursor:pointer;box-sizing:border-box;color:var(--tx);white-space:nowrap}
 .dm button:hover,.dm label:hover,#cm button:hover{background:var(--bg)}
-@media (max-width:760px){body>#tools{justify-content:space-around;gap:2px;padding:4px 6px;background:var(--pn);border-top:1px solid var(--bd)}body>#tools .tb{flex:1;flex-direction:column;display:flex;align-items:center;gap:0;font-size:20px;min-height:48px;padding:4px}body>#tools .tb span{display:block;margin:0;font-size:10px}#pnm{width:110px}}
+@media (max-width:760px),(pointer:coarse) and (max-width:1400px){body>#tools{justify-content:space-around;gap:2px;padding:4px 6px;background:var(--pn);border-top:1px solid var(--bd)}body>#tools .tb{flex:1;flex-direction:column;display:flex;align-items:center;gap:0;font-size:20px;min-height:48px;padding:4px}body>#tools .tb span{display:block;margin:0;font-size:10px}#pnm{width:110px}}
 main{flex:1;display:flex;min-height:0}
 aside{width:250px;flex:none;overflow:auto;padding:10px;background:var(--pn);border-right:1px solid var(--bd)}
 aside h3,#md h3{margin:12px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mu)}
@@ -78,11 +78,12 @@ td:first-child{width:28px;text-align:center;color:var(--mu)}
 #ts{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111;color:#fff;padding:8px 14px;border-radius:8px;display:none;z-index:20}
 #sdt{display:none}
 body{overscroll-behavior:none}
-@media (max-width:760px){main{flex-direction:column-reverse}#ddf+.sp+.sp{display:none}aside{display:none;width:auto;max-height:42%;border-right:0;border-top:1px solid var(--bd)}body.sdo aside{display:block}.bd{grid-template-columns:1fr}
+@media (max-width:760px),(pointer:coarse) and (max-width:1400px){main{flex-direction:column-reverse}#ddf+.sp+.sp{display:none}aside{display:none;width:auto;max-height:42%;border-right:0;border-top:1px solid var(--bd)}body.sdo aside{display:block}.bd{grid-template-columns:1fr}
  #sdt{display:inline-block}#ti{display:none}
  header{flex-wrap:nowrap;overflow-x:auto;gap:4px;padding:6px 8px}header button,header .fb{flex:none;white-space:nowrap}header .sp{flex:none}
  #ov{padding:env(safe-area-inset-top,0px) 0 0}#md{width:100%;max-height:100%;border-radius:0;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px))}
  #tb table{min-width:720px}#hn{font-size:11px;bottom:6px}}
+@media (pointer:coarse) and (min-width:900px){.bd{grid-template-columns:350px minmax(0,1fr)}#md{max-width:1000px;margin:auto;border-radius:12px;max-height:94%}#ov{padding:2% 0}body>#tools{padding-inline:max(6px,(100% - 900px)/2)}aside{max-height:38%}}
 @media (pointer:coarse){button,.fb{min-height:40px;padding:8px 12px}input,select,textarea{font-size:16px;min-height:36px}input[type=color]{width:40px;height:36px}.pp i{width:7px;height:7px}}
 </style></head>
 <body>
@@ -429,7 +430,7 @@ async function quickSave(){const nm0=($('#pnm').value||'').trim()||S.name||'Plan
  catch(e){toast('Enregistrement impossible dans ce navigateur : utilisez Fichier › Exporter le plan',7000)}}
 function newPlan(){if(dirty&&!newPlan.c){newPlan.c=1;setTimeout(()=>newPlan.c=0,5000);toast('Modifications non enregistrées : cliquez à nouveau sur « Nouveau plan » pour confirmer',5000);return}
  newPlan.c=0;S=blank();U.length=0;lastSnap=null;selLink=null;from=null;dirty=false;fit();touch()}
-const mq=matchMedia('(max-width:760px)');
+const mq=matchMedia('(max-width:760px),(pointer:coarse) and (max-width:1400px)');
 function placeTools(){const t=$('#tools'),h=document.querySelector('header');if(mq.matches){if(t.parentNode!==document.body)document.body.appendChild(t)}else if(t.parentNode!==h)h.insertBefore(t,$('#ddf').nextElementSibling.nextElementSibling)}
 mq.addEventListener('change',placeTools);placeTools();
 const cl=o=>JSON.parse(JSON.stringify(o));
@@ -476,7 +477,7 @@ function side(){
  h+=`<h3>Nœuds (${S.nodes.length})</h3><input id="nq" placeholder="Rechercher un nœud…" value="${esc(nq)}" oninput="nq=this.value;nlist()" style="width:100%"><div id="nl"></div>`;
  h+=`<h3>Échelle & longueurs</h3><div class="r"><button onclick="setMode('scale')">📏 Définir l’échelle</button></div><p class="hint" style="margin:0">${S.mpp?'1 px = '+(S.mpp<1?(S.mpp*100).toFixed(1)+' cm':S.mpp.toFixed(2)+' m')+' · plan ≈ '+fm(S.w*S.mpp)+' de large':'Échelle non définie : cliquez deux points dont vous connaissez la distance.'}</p><div class="r"><label><input type="checkbox" ${S.showLen?'checked':''} onchange="S.showLen=this.checked;touch()"> Afficher les longueurs sur le plan</label></div>${S.mpp?'<div class="r"><button onclick="S.mpp=0;touch()">Effacer l’échelle</button></div>':''}`;
  h+='<h3>Aide</h3><p class="hint"><b>Nœud</b> : cliquez sur le plan pour poser un nœud.<br><b>Liaison</b> : cliquez sur deux nœuds (ligne droite).<br><b>Tracé libre</b> : cliquez sur le nœud de départ, puis sur chaque point du trajet de la fibre, et terminez sur le nœud d’arrivée. Échap annule, Retour arrière retire le dernier point. Pour modifier une liaison existante : cliquez dessus pour la sélectionner, puis cliquez-glissez sur elle pour ajouter un point.<br><b>Sélection</b> : glissez un nœud pour le déplacer, cliquez dessus pour ouvrir sa baie, cliquez une liaison pour la modifier. Molette = zoom, glisser le fond ou maintenir le clic molette = déplacer le plan (dans tous les modes).<br>Tactile : pincez à deux doigts pour zoomer, glissez à deux doigts pour déplacer. Appui long sur un nœud : active son déplacement (relâchez sans bouger pour le menu).</p>';
- $('#sd').innerHTML=h;document.body.classList.toggle('sdo',innerWidth<=760&&(sdMan||!!selLink));nlist();
+ $('#sd').innerHTML=h;document.body.classList.toggle('sdo',mq.matches&&(sdMan||!!selLink));nlist();
 }
 function delType(i){if(S.types.length<2)return;S.types.splice(i,1);S.links.forEach(l=>{if(l.t==i)l.t=0;else if(l.t>i)l.t--});linkType=0;touch()}
 
