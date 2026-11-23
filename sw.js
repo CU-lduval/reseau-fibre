@@ -1,6 +1,6 @@
 /* Service worker : application utilisable hors connexion.
    Pour publier une nouvelle version : modifiez index.html, puis changez VERSION ci-dessous. */
-const VERSION = 'fibre-v4';
+const VERSION = 'fibre-v5';
 const CORE = ['./', 'index.html', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png', 'icons/apple-touch-icon.png'];
 // Bibliothèque PDF (import d'un fond de plan PDF), mise en cache pour l'usage hors ligne

@@ -61,7 +61,7 @@ aside h3:first-child{margin-top:0}
 .u b{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ix{font-size:11px;opacity:.6;width:16px;flex:none}
 .pp{display:flex;flex-wrap:wrap;gap:2px;margin-left:auto;justify-content:flex-end;max-width:45%}
-.pp i{width:6px;height:6px;border-radius:50%;background:#64748b}.pp i.f{background:#16a34a}
+.pp i{width:6px;height:6px;border-radius:50%;background:#64748b}.pp i.f{background:#16a34a}.pp i.hs{background:#dc2626;box-shadow:0 0 0 1px #7f1d1d}tr.hs td{background:#fee2e2}td.hsc,th.hsc{text-align:center;width:1%;white-space:nowrap;padding-inline:4px}td.hsc input{width:20px;height:20px;accent-color:#dc2626;vertical-align:middle}
 .sc{overflow-x:auto}
 table{border-collapse:collapse;width:100%}
 th{font-size:12px;color:var(--mu);text-align:left;padding:2px 4px}
@@ -71,7 +71,7 @@ td:first-child{width:28px;text-align:center;color:var(--mu)}
 #rack .r input{min-width:120px}
 .kc{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:4px}.kc select{width:100%;min-width:0}.kc select:first-child{grid-column:1/-1}
 .cw{display:flex;align-items:center;gap:4px}.cw select{flex:1 1 auto;width:auto;min-width:84px}
-#tb td:nth-child(2){width:42%;min-width:220px}#tb td:nth-child(3){width:1%;min-width:195px}#tb td:nth-child(5){width:20%;min-width:130px}#tb td:nth-child(4){min-width:156px}.ci{flex:none;display:inline-flex;justify-content:center;width:56px}
+#tb td:nth-child(3){width:42%;min-width:220px}#tb td:nth-child(4){width:1%;min-width:195px}#tb td:nth-child(6){width:20%;min-width:130px}#tb td:nth-child(5){min-width:156px}.ci{flex:none;display:inline-flex;justify-content:center;width:56px}
 #pr{display:none}
 #cb,#pbar{display:none;position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:3;gap:6px;background:var(--pn);padding:6px;border:1px solid var(--bd);border-radius:8px}
 @page{size:A4;margin:12mm}
@@ -83,7 +83,7 @@ body{overscroll-behavior:none}
  #sdt{display:inline-block}#ti{display:none}
  header{flex-wrap:nowrap;overflow-x:auto;gap:4px;padding:6px 8px}header button,header .fb{flex:none;white-space:nowrap}header .sp{flex:none}
  #ov{padding:env(safe-area-inset-top,0px) 0 0}#md{width:100%;max-height:100%;border-radius:0;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px))}
- #tb table{min-width:720px}#hn{font-size:11px;bottom:6px}}
+ #tb table{min-width:760px}#hn{font-size:11px;bottom:6px}}
 @media (pointer:coarse) and (min-width:900px){.bd{grid-template-columns:350px minmax(0,1fr)}#md{max-width:1000px;margin:auto;border-radius:12px;max-height:94%}#ov{padding:2% 0}body>#tools{padding-inline:max(6px,(100% - 900px)/2)}aside{max-height:38%}}
 @media (pointer:coarse){button,.fb{min-height:40px;padding:8px 12px}input,select,textarea{font-size:16px;min-height:36px}input[type=color]{width:40px;height:36px}.pp i{width:7px;height:7px}}
 </style></head>
@@ -268,16 +268,16 @@ async function planCanvas(){
 async function expPng(){try{const c=await planCanvas(),blob=await new Promise(r=>c.toBlob(r,'image/png'));
  const fn=(S.name||'plan').replace(/[^a-zA-Z0-9À-ÿ _-]+/g,'_').trim()+'.png',r=await saveFile(fn,blob,'image/png');if(r=='ok')toast('Image enregistrée');else if(r=='none')openImg(c.toDataURL('image/png'))
 }catch(e){if(e&&e.code=='declined')return;toast('Export image impossible : '+((e&&(e.code||e.message))||e),8000)}}
-const RCSS=`.rp{font:12px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;color:#111;background:#fff}.rp h1{font-size:20px;margin:0 0 4px}.rp h2{font-size:16px;margin:18px 0 6px;border-bottom:2px solid #333;padding-bottom:3px}.rp h3{font-size:13px;margin:12px 0 4px}.rp table{border-collapse:collapse;width:100%;margin:4px 0 10px}.rp th,.rp td{border:1px solid #999;padding:3px 6px;text-align:left;vertical-align:top}.rp th{background:#eee}.rp tr{break-inside:avoid}.rp .sw{display:inline-block;width:22px;height:6px;margin-right:6px;vertical-align:middle;-webkit-print-color-adjust:exact;print-color-adjust:exact}.rp .pb{break-before:page}.rp img{max-width:100%}.rp .m{color:#555}`;
+const RCSS=`.rp{font:12px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;color:#111;background:#fff}.rp h1{font-size:20px;margin:0 0 4px}.rp h2{font-size:16px;margin:18px 0 6px;border-bottom:2px solid #333;padding-bottom:3px}.rp h3{font-size:13px;margin:12px 0 4px}.rp table{border-collapse:collapse;width:100%;margin:4px 0 10px}.rp th,.rp td{border:1px solid #999;padding:3px 6px;text-align:left;vertical-align:top}.rp th{background:#eee}.rp tr{break-inside:avoid}.rp .sw{display:inline-block;width:22px;height:6px;margin-right:6px;vertical-align:middle;-webkit-print-color-adjust:exact;print-color-adjust:exact}.rp .pb{break-before:page}.rp img{max-width:100%}.rp .m{color:#555}.rp tr.hs td{background:#fee2e2;-webkit-print-color-adjust:exact;print-color-adjust:exact}`;
 let rid=null;
 function rBaie(b,hide,n){let u0=1,h=`<h3>${esc(b.n)}</h3>`;
  if(!b.units.length)return h+'<p class="m">Baie vide.</p>';
  h+='<table><tr><th>U</th><th>Élément</th><th>Détail</th></tr>';
- b.units.forEach(u=>{const a=u0,z=u0+u.u-1;u0=z+1;const f=u.t=='p'?(u.rows||[]).filter(r=>r&&r.r).length:0;
-  h+=`<tr><td>${a==z?'U'+a:'U'+a+'–'+z}</td><td>${esc(u.n)}</td><td>${u.t=='p'?'Bandeau de brassage · '+u.p+' paires ('+f+' renseignée'+(f>1?'s':'')+')'+(ud(u)?' · '+esc(rt(n,b,u)):''):'Équipement'+(u.note?' · '+esc(u.note):'')}</td></tr>`});
+ b.units.forEach(u=>{const a=u0,z=u0+u.u-1;u0=z+1;const f=u.t=='p'?(u.rows||[]).filter(r=>r&&r.r).length:0,nh=u.t=='p'?(u.rows||[]).slice(0,u.p).filter(r=>r&&r.hs).length:0;
+  h+=`<tr><td>${a==z?'U'+a:'U'+a+'–'+z}</td><td>${esc(u.n)}</td><td>${u.t=='p'?'Bandeau de brassage · '+u.p+' paires ('+f+' renseignée'+(f>1?'s':'')+(nh?', '+nh+' HS':'')+')'+(ud(u)?' · '+esc(rt(n,b,u)):''):'Équipement'+(u.note?' · '+esc(u.note):'')}</td></tr>`});
  h+='</table>';
  b.units.filter(u=>u.t=='p').forEach(u=>{let rows='';
-  for(let i=0;i<u.p;i++){const r=(u.rows||[])[i]||{};if(hide&&!(r.r||r.m))continue;rows+=`<tr><td>${i+1}</td><td>${esc(r.r)}</td><td>${esc(rk(r))}</td><td>${icR(r.c||'SC')}${esc(r.c||'SC')}</td><td>${esc(r.m)}</td></tr>`}
+  for(let i=0;i<u.p;i++){const r=(u.rows||[])[i]||{};if(hide&&!(r.r||r.m||r.hs))continue;rows+=`<tr${r.hs?' class="hs"':''}><td>${i+1}${r.hs?' <b style="color:#dc2626">HS</b>':''}</td><td>${esc(r.r)}</td><td>${esc(rk(r))}</td><td>${icR(r.c||'SC')}${esc(r.c||'SC')}</td><td>${esc(r.m)}</td></tr>`}
   h+=`<h3>${esc(u.n)} <span class="m">(${u.p} paires)</span></h3><p style="margin:0 0 4px;font-weight:700">${esc(rt(n,b,u))}</p>`+(rows?`<table><tr><th>N°</th><th>Rôle / service</th><th>Raccordé à</th><th>Conn.</th><th>Remarque</th></tr>${rows}</table>`:'<p class="m">Aucune paire renseignée.</p>')});
  return h}
 function rNode(n,hide,pb){const bs=n.baies||(n.units&&n.units.length?[{n:'Baie 1',units:n.units}]:[]),ls=S.links.filter(l=>l.a==n.id||l.b==n.id);
@@ -291,7 +291,7 @@ const ensB=n=>{if(!n.baies){n.baies=[{id:uid(),n:'Baie 1',units:n.units||[]}];de
 const lkT=l=>{if(!l)return null;const n=S.nodes.find(x=>x.id==l.n);if(!n)return null;const b=ensB(n).find(x=>x.id==l.b),u=b&&b.units.find(x=>x.id==l.u);return u?{n,b,u}:null};
 function unlink(u){if(!u||!u.lk)return;const t=lkT(u.lk);if(t&&t.u.lk&&t.u.lk.u==u.id){t.u.dest=ud(t.u);delete t.u.lk}delete u.lk}
 function syncAll(u){const t=lkT(u.lk);if(!t)return;const m=t.u,N=Math.min(u.p,m.p);u.rows=u.rows||[];m.rows=m.rows||[];
- for(let i=0;i<N;i++){const a=u.rows[i]||(u.rows[i]={}),b=m.rows[i]||(m.rows[i]={});['r','f'].forEach(k=>{if(a[k])b[k]=a[k];else if(b[k])a[k]=b[k]})}}
+ for(let i=0;i<N;i++){const a=u.rows[i]||(u.rows[i]={}),b=m.rows[i]||(m.rows[i]={});['r','f','hs'].forEach(k=>{if(a[k])b[k]=a[k];else if(b[k])a[k]=b[k]})}}
 function setDest(u,val){val=(val||'').trim();
  const p=val.split(' › ').map(x=>x.trim());let n=S.nodes.find(x=>x.n==p[0]),b=n&&ensB(n).find(x=>x.n==p[1]);
  if(!b&&p.length==1){const b0=ensB(nn).find(x=>x.n==p[0]);if(b0){n=nn;b=b0;p.unshift(nn.n)}}
@@ -503,7 +503,7 @@ function closeM(){$('#ov').style.display='none';bn=null;touch()}
 let nn=null,autoPath=0,sp=[],cr=null,bgPrev=null;
 function openBaie(id){fx=id;nn=nd(id);if(!nn.baies){nn.baies=[{id:uid(),n:'Baie 1',units:nn.units||[]}];delete nn.units}if(!nn.baies.length)nn.baies.push({id:uid(),n:'Baie 1',units:[]});bn=nn.baies[0];su=null;delNode.c=0;delBaie.c=0;
  modal(`<div class="mh"><input class="ttl" value="${esc(nn.n)}" onchange="nn.n=this.value;touch()"><button onclick="openReport(nn.id)" title="Fiche à imprimer ou télécharger">🖨 Fiche</button><button onclick="closeM()">✕</button></div><div class="bd"><div id="rack"></div><div id="tb" class="sc"></div></div>`);rack();tbl()}
-function pairs(u){let h='';for(let i=0;i<u.p;i++)h+=`<i class="${(u.rows[i]||{}).r?'f':''}"></i>`;return h}
+function pairs(u){let h='';for(let i=0;i<u.p;i++){const r=(u.rows||[])[i]||{};h+=`<i class="${r.hs?'hs':r.r?'f':''}" title="Paire ${i+1}${r.hs?' — HS':r.r?' — '+esc(r.r):''}"></i>`}return h}
 function rack(){
  let h=`<div class="r">${nn.baies.map(b=>`<button class="${b==bn?'on':''}" onclick="selBaie('${b.id}')">${esc(b.n)}</button>`).join('')}<button onclick="addBaie()">+ Baie</button></div><div class="r"><input value="${esc(bn.n)}" title="Nom de la baie" onchange="bn.n=this.value;rack();tbl();persist()"><button onclick="dupBaie()" title="Dupliquer la baie et ses bandeaux">⧉ Dupliquer</button><button class="d" onclick="delBaie(event)">Supprimer la baie</button></div><div class="r"><button onclick="addU('p')">+ Bandeau</button>${sel([6,12,24,48],12,'id="np"')}<span class="hint">paires</span><button onclick="addU('e')">+ Équipement</button></div><div class="rk">`;
  bn.units.forEach((u,i)=>h+=`<div class="u ${u.t} ${u.id==su?'on':''}" style="height:${42*u.u}px" onclick="pick('${u.id}')"><span class="ix">${i+1}</span><b>${esc(u.n)}</b>${u.t=='p'?`<span class="pp">${pairs(u)}</span>`:''}</div>`);
@@ -517,16 +517,19 @@ function rack(){
 function tbl(){const u=cu(),el=$('#tb');
  if(!u){el.innerHTML='<p class="hint">Cliquez sur un bandeau de brassage pour détailler le rôle de chaque paire de fibres.</p>';return}
  if(u.t=='e'){el.innerHTML=`<h3>${esc(u.n)}</h3><textarea rows="6" style="width:100%" placeholder="Notes sur l’équipement (modèle, ports, VLAN…)" oninput="cu().note=this.value;persist()">${esc(u.note)}</textarea>`;return}
- let h=`<h3>${esc(u.n)} · ${u.p} paires</h3><div style="font-weight:700;font-size:15px;margin:0 0 6px">${esc(rt(nn,bn,u))}</div><div class="r"><button onclick="openConn()">🖼 Illustrations des connecteurs…</button></div><datalist id="dl">${S.nodes.map(n=>`<option value="${esc(n.n)}">`+ensB(n).filter(b=>b!==bn).map(b=>`<option value="${esc(n.n+' › '+b.n)}">`+b.units.filter(x=>x.t=='p'&&(!x.lk||x.lk.u==u.id)).map(x=>`<option value="${esc(n.n+' › '+b.n+' › '+x.n)}">`).join('')).join('')).join('')}</datalist><table><tr><th>N°</th><th>Rôle / service</th><th>Raccordé à</th><th>Conn.</th><th>Remarque</th></tr>`;
+ let h=`<h3>${esc(u.n)} · ${u.p} paires</h3><div style="font-weight:700;font-size:15px;margin:0 0 6px">${esc(rt(nn,bn,u))}</div><div class="r"><button onclick="openConn()">🖼 Illustrations des connecteurs…</button></div><datalist id="dl">${S.nodes.map(n=>`<option value="${esc(n.n)}">`+ensB(n).filter(b=>b!==bn).map(b=>`<option value="${esc(n.n+' › '+b.n)}">`+b.units.filter(x=>x.t=='p'&&(!x.lk||x.lk.u==u.id)).map(x=>`<option value="${esc(n.n+' › '+b.n+' › '+x.n)}">`).join('')).join('')).join('')}</datalist><table><tr><th>N°</th><th class="hsc" title="Paire hors service">HS</th><th>Rôle / service</th><th>Raccordé à</th><th>Conn.</th><th>Remarque</th></tr>`;
  for(let i=0;i<u.p;i++){const r=u.rows[i]||{},a=`data-i="${i}" data-k=`;
-  h+=`<tr><td>${i+1}</td><td><input ${a}"r" value="${esc(r.r)}"></td><td>${kcell(u,i,r)}</td><td><div class="cw"><span class="ci">${ic(r.c||'SC')}</span>${sel(CN,r.c||'SC',a+'"c"')}</div></td><td><input ${a}"m" value="${esc(r.m)}"></td></tr>`}
+  h+=`<tr${r.hs?' class="hs"':''}><td>${i+1}</td><td class="hsc"><input type="checkbox" title="Paire hors service" ${a}"hs"${r.hs?' checked':''}></td><td><input ${a}"r" value="${esc(r.r)}"></td><td>${kcell(u,i,r)}</td><td><div class="cw"><span class="ci">${ic(r.c||'SC')}</span>${sel(CN,r.c||'SC',a+'"c"')}</div></td><td><input ${a}"m" value="${esc(r.m)}"></td></tr>`}
  el.innerHTML=h+'</table>'}
 $('#md').addEventListener('input',e=>{const t=e.target,u=cu();if(!u||u.t!='p'||!t.dataset.k)return;const i=+t.dataset.i,k=t.dataset.k;
  if(k=='k'||k=='tu'||k=='ti'){pairAct(u,i,k,t.value);return}
+ if(k=='hs'){setHS(u,i,t.checked);t.closest('tr').classList.toggle('hs',t.checked);rack();persist();return}
  (u.rows[i]=u.rows[i]||{})[k]=t.value;
  if(k=='c'){const ci=t.parentNode.querySelector('.ci');if(ci)ci.innerHTML=ic(t.value)}
  if(k=='r')propRole(u,i,t.value);
  rack();persist()});
+/* Paire HS : même fibre à l'autre extrémité du câble (bandeau lié), pas à travers le brassage */
+function setHS(u,i,v){const set=(x,j)=>{x.rows=x.rows||[];const r=x.rows[j]=x.rows[j]||{};if(v)r.hs=true;else delete r.hs};set(u,i);const t=u.lk&&lkT(u.lk);if(t&&i<t.u.p)set(t.u,i)}
 function addU(t){const k=bn.units.filter(u=>u.t==t).length+1,u={id:uid(),t,n:(t=='p'?'Bandeau ':'Équipement ')+k,u:1,p:t=='p'?+$('#np').value:0,rows:[],note:''};bn.units.push(u);su=u.id;rack();tbl();persist()}
 function pick(id){su=id;rack();tbl()}
 function selBaie(id){bn=nn.baies.find(b=>b.id==id);su=null;delBaie.c=0;rack();tbl()}
