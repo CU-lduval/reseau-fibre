@@ -306,22 +306,26 @@ function setDest(u,val){val=(val||'').trim();
  u.lk={n:n.id,b:b.id,u:m.id};m.lk={n:nn.id,b:bn.id,u:u.id};delete u.dest;delete m.dest;syncAll(u);
  toast(created?'Bandeau créé dans '+n.n+' › '+b.n+' et lié':'Lié au bandeau '+m.n+' de '+n.n+' › '+b.n,5000)}
 const uById=id=>{for(const n of S.nodes)for(const b of ensB(n)){const u=b.units.find(x=>x.id==id);if(u)return{n,b,u}}return null};
-const rk=r=>{if(r.k!='bdo')return 'Appareil';const t=r.t&&uById(r.t.u);return t?'Bandeau '+t.u.n+' · prise '+(r.t.i+1):'Bandeau'};
+const rk=r=>{if(r.k!='bdo')return 'Appareil';const t=r.t&&uById(r.t.u);return t?'Bandeau '+(ensB(t.n).length>1?t.b.n+' › ':'')+t.u.n+' · prise '+(r.t.i+1):'Bandeau (à définir)'};
 const pairNb=(u,i)=>{const o=[],r=(u.rows||[])[i]||{};if(u.lk){const t=lkT(u.lk);if(t&&i<t.u.p)o.push([t.u,i])}if(r.t){const t=uById(r.t.u);if(t&&r.t.i<t.u.p)o.push([t.u,r.t.i])}return o};
 function propRole(u,i,val){const seen=new Set([u.id+':'+i]),q=[[u,i]];while(q.length){const[x,j]=q.shift();pairNb(x,j).forEach(([y,k])=>{const key=y.id+':'+k;if(seen.has(key))return;seen.add(key);y.rows=y.rows||[];(y.rows[k]=y.rows[k]||{}).r=val;q.push([y,k])})}}
 function unlinkPair(u,i){const r=(u.rows||[])[i];if(!r||!r.t)return;const t=uById(r.t.u);if(t){const o=(t.u.rows||[])[r.t.i];if(o&&o.t&&o.t.u==u.id&&o.t.i==i){delete o.t;o.k='app'}}delete r.t}
 const freePair=(t,i)=>{t.rows=t.rows||[];const free=j=>!(t.rows[j]&&t.rows[j].t);if(i<t.p&&free(i))return i;for(let j=0;j<t.p;j++)if(free(j))return j;return Math.min(i,t.p-1)};
-function setPairLink(u,i,t,j){u.rows=u.rows||[];t.rows=t.rows||[];unlinkPair(u,i);unlinkPair(t,j);const a=u.rows[i]=u.rows[i]||{},b=t.rows[j]=t.rows[j]||{};a.k='bdo';b.k='bdo';a.t={u:t.id,i:j};b.t={u:u.id,i};
+function setPairLink(u,i,t,j){u.rows=u.rows||[];t.rows=t.rows||[];unlinkPair(u,i);unlinkPair(t,j);const a=u.rows[i]=u.rows[i]||{},b=t.rows[j]=t.rows[j]||{};a.k='bdo';b.k='bdo';delete a.tp;delete b.tp;a.t={u:t.id,i:j};b.t={u:u.id,i};
  if(a.r)propRole(u,i,a.r);else if(b.r){a.r=b.r;propRole(t,j,b.r)}}
-function pairAct(u,i,k,v){u.rows=u.rows||[];const r=u.rows[i]=u.rows[i]||{},bd=bn.units.filter(x=>x.t=='p'&&x!==u);
- if(k=='k'){if(v=='app'){unlinkPair(u,i);r.k='app'}else{if(!bd.length){toast('Aucun autre bandeau dans cette baie',4000);tbl();return}const t=bd[0];setPairLink(u,i,t,freePair(t,i))}}
- else if(k=='tu'){const t=bn.units.find(x=>x.id==v);if(t)setPairLink(u,i,t,freePair(t,i))}
- else if(k=='ti'){const c=r.t&&uById(r.t.u);if(c)setPairLink(u,i,c.u,+v)}
+/* Bandeaux du nœud ouvert (toutes ses baies) pouvant servir de destination */
+const nodeP=u=>ensB(nn).flatMap(b=>b.units.filter(x=>x.t=='p'&&x!==u).map(x=>({b,x})));
+function pairAct(u,i,k,v){u.rows=u.rows||[];const r=u.rows[i]=u.rows[i]||{};
+ if(k=='k'){unlinkPair(u,i);delete r.tp;if(v=='app')r.k='app';else{if(!nodeP(u).length){toast('Aucun autre bandeau dans ce nœud',4000);r.k='app';tbl();return}r.k='bdo'}}
+ else if(k=='tu'){unlinkPair(u,i);r.k='bdo';if(v&&uById(v))r.tp=v;else delete r.tp}
+ else if(k=='ti'){const id=r.t?r.t.u:r.tp,c=id&&uById(id);if(c&&v!==''){setPairLink(u,i,c.u,+v);delete r.tp}}
  rack();tbl();persist()}
-const kcell=(u,i,r)=>{const a=`data-i="${i}" data-k=`,bd=bn.units.filter(x=>x.t=='p'&&x!==u),k=r.k=='bdo'?'bdo':'app',t=k=='bdo'&&r.t?uById(r.t.u):null;
+const kcell=(u,i,r)=>{const a=`data-i="${i}" data-k=`,bd=nodeP(u),k=r.k=='bdo'?'bdo':'app',id=k=='bdo'?(r.t?r.t.u:r.tp):null,t=id?uById(id):null,multi=ensB(nn).length>1;
  let h=`<div class="kc"><select ${a}"k"><option value="app"${k=='app'?' selected':''}>Appareil</option><option value="bdo"${k=='bdo'?' selected':''}>Bandeau</option></select>`;
- if(k=='bdo'){h+=`<select ${a}"tu">${t?'':'<option value="" selected>— choisir —</option>'}${bd.map(x=>`<option value="${x.id}"${t&&t.u===x?' selected':''}>${esc(x.n)}</option>`).join('')}</select>`;
-  if(t)h+=`<select ${a}"ti">${Array.from({length:Math.max(t.u.p,r.t.i+1)},(_,j)=>`<option value="${j}"${j==r.t.i?' selected':''}>prise ${j+1}</option>`).join('')}</select>`}
+ if(k=='bdo'){const opt=x=>`<option value="${x.id}"${t&&t.u===x?' selected':''}>${esc(x.n)}</option>`;
+  h+=`<select ${a}"tu"><option value=""${t?'':' selected'}>— bandeau —</option>${multi?ensB(nn).map(b=>{const l=bd.filter(o=>o.b===b);return l.length?`<optgroup label="${esc(b.n)}">${l.map(o=>opt(o.x)).join('')}</optgroup>`:''}).join(''):bd.map(o=>opt(o.x)).join('')}</select>`;
+  if(t){const tr=t.u.rows||[],cur=r.t?r.t.i:-1;
+   h+=`<select ${a}"ti">${cur<0?'<option value="" selected>— prise —</option>':''}${Array.from({length:Math.max(t.u.p,cur+1)},(_,j)=>{const o=tr[j],busy=o&&o.t&&!(o.t.u==u.id&&o.t.i==i);return `<option value="${j}"${j==cur?' selected':''}>prise ${j+1}${busy?' (occupée)':''}</option>`}).join('')}</select>`}}
  return h+'</div>'};
 function setPairs(v){const u=cu();if(!u||u.t!='p')return;const n=Math.max(1,Math.min(96,parseInt(v)||u.p)),old=u.p;if(n===old){rack();return}
  u.p=n;const m=u.lk&&lkT(u.lk);if(m)m.u.p=n;
