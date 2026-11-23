@@ -46,6 +46,7 @@ aside h3:first-child{margin-top:0}
 #hn{position:absolute;left:8px;bottom:8px;z-index:2;max-width:calc(100% - 16px);background:var(--pn);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:5px 10px;font-size:12px;pointer-events:none;opacity:.92}
 #sv{width:100%;height:100%;display:block;touch-action:none;user-select:none}
 .nl{font:600 13px system-ui,sans-serif;paint-order:stroke;stroke:#fff;stroke-width:3px;fill:#111;text-anchor:middle}
+#ly .lk{transition:opacity .15s}#ly.fade .lk{opacity:.22}#ly.fade .lk.on{opacity:1}#ly.fade polyline.lk.on{filter:drop-shadow(0 0 2px rgba(0,0,0,.45))}#ly g.fo>circle:first-child{stroke:#2563eb;stroke-width:5}
 .lb{font:600 12px system-ui,sans-serif;paint-order:stroke;stroke:#fff;stroke-width:3px;fill:#111;text-anchor:middle}
 #ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:calc(10px + env(safe-area-inset-top,0px)) 10px 10px;box-sizing:border-box;z-index:9}
 #md{background:var(--pn);width:min(1280px,100%);max-height:100%;overflow:auto;border-radius:12px;padding:14px;box-sizing:border-box}
@@ -166,15 +167,15 @@ function draw(){
  if(S.bg){if(bi.getAttribute('href')!==S.bg)bi.setAttribute('href',S.bg);bi.style.display=''}else bi.style.display='none';
  const s=Math.min(8,Math.max(.7,1/view.k));let h='';
  S.links.forEach(l=>{const q=lpts(l);if(!q)return;const t=S.types[l.t]||S.types[0]||{c:'#888'},ps=q.map(p=>p.x+','+p.y).join(' ');
-  h+=`<polyline points="${ps}" fill="none" stroke="${t.c}" stroke-width="${(l.id==selLink?8:4)*s}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const la=`class="lk" data-id="${l.id}" data-a="${l.a}" data-b="${l.b}"`;h+=`<polyline ${la} points="${ps}" fill="none" stroke="${t.c}" stroke-width="${(l.id==selLink?8:4)*s}" stroke-linecap="round" stroke-linejoin="round"/>`;
   h+=`<polyline data-l="${l.id}" points="${ps}" fill="none" stroke="transparent" stroke-width="${(T?30:16)*s}" style="cursor:pointer"/>`;
-  const lt=[l.lb,S.showLen&&S.mpp?fm(llen(l)):''].filter(Boolean).join(' · ');if(lt){const i=Math.floor((q.length-1)/2),x=(q[i].x+q[i+1].x)/2,y=(q[i].y+q[i+1].y)/2;h+=`<text class="lb" transform="translate(${x} ${y-6*s}) scale(${s})">${esc(lt)}</text>`}
+  const lt=[l.lb,S.showLen&&S.mpp?fm(llen(l)):''].filter(Boolean).join(' · ');if(lt){const i=Math.floor((q.length-1)/2),x=(q[i].x+q[i+1].x)/2,y=(q[i].y+q[i+1].y)/2;h+=`<text ${la.replace('class="lk"','class="lb lk"')} transform="translate(${x} ${y-6*s}) scale(${s})">${esc(lt)}</text>`}
   if(l.id==selLink)(l.pts||[]).forEach((p,i)=>h+=`<circle data-h="${l.id}:${i}" cx="${p.x}" cy="${p.y}" r="${(T?12:7)*s}" fill="#fff" stroke="${t.c}" stroke-width="${3*s}" style="cursor:move"/>`)});
  if(mode=='path'&&from&&cur){const a=nd(from),t=S.types[linkType]||{c:'#888'};h+=`<polyline points="${[a,...pp,cur].map(p=>p.x+','+p.y).join(' ')}" fill="none" stroke="${t.c}" stroke-width="${4*s}" stroke-dasharray="${10*s} ${6*s}" stroke-linecap="round" stroke-linejoin="round"/>`;pp.forEach(p=>h+=`<circle cx="${p.x}" cy="${p.y}" r="${5*s}" fill="${t.c}"/>`)}
- S.nodes.forEach(n=>{h+=`<g data-n="${n.id}" transform="translate(${n.x} ${n.y}) scale(${s})" style="cursor:pointer"><circle r="${T?19:13}" fill="${from==n.id||hl==n.id?'#fde047':'#fff'}" stroke="#1d2433" stroke-width="3"/><circle r="4" fill="#1d2433"/><text class="nl" y="30">${esc(n.n)}</text></g>`});
+ S.nodes.forEach(n=>{h+=`<g data-n="${n.id}"${(hov||fx)==n.id?' class="fo"':''} transform="translate(${n.x} ${n.y}) scale(${s})" style="cursor:pointer"><circle r="${T?19:13}" fill="${from==n.id||hl==n.id?'#fde047':'#fff'}" stroke="#1d2433" stroke-width="3"/><circle r="4" fill="#1d2433"/><text class="nl" y="30">${esc(n.n)}</text></g>`});
  if(mode=='scale'&&sp.length){const q=sp.length<2&&cur?[sp[0],cur]:sp;h+=`<polyline points="${q.map(p=>p.x+','+p.y).join(' ')}" fill="none" stroke="#f59e0b" stroke-width="${3*s}" stroke-dasharray="${8*s} ${5*s}"/>`+sp.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="${6*s}" fill="#f59e0b" stroke="#fff" stroke-width="${2*s}"/>`).join('')}
  if(mode=='crop'&&cr){const X=Math.min(cr.x0,cr.x1),Y=Math.min(cr.y0,cr.y1),Wd=Math.abs(cr.x1-cr.x0),Hd=Math.abs(cr.y1-cr.y0);h+=`<path d="M0 0H${S.w}V${S.h}H0Z M${X} ${Y}h${Wd}v${Hd}h${-Wd}Z" fill="rgba(0,0,0,.45)" fill-rule="evenodd"/><rect x="${X}" y="${Y}" width="${Wd}" height="${Hd}" fill="none" stroke="#f59e0b" stroke-width="${2*s}" stroke-dasharray="${8*s} ${5*s}"/>`}
- $('#ly').innerHTML=h;statUpd();$('#pbar').style.display=mode=='path'&&from?'flex':'none';
+ $('#ly').innerHTML=h;applyFocus();statUpd();$('#pbar').style.display=mode=='path'&&from?'flex':'none';
  $('#hn').textContent=hz(mode=='crop'?'Recadrage : tracez le rectangle à conserver, puis validez (vous pouvez le retracer).':mode=='scale'?'Échelle : cliquez sur deux points dont vous connaissez la distance réelle (Échap annule).':mode=='sel'?'Sélection : glissez un nœud, cliquez dessus pour ouvrir sa baie, cliquez sur une liaison pour modifier son tracé.':mode=='node'?'Nœud : cliquez sur le plan pour poser un nœud.':mode=='link'?(from?'Cliquez sur le nœud d’arrivée.':'Liaison droite : cliquez sur le nœud de départ.'):from?'Cliquez pour poser les points du trajet, puis sur le nœud d’arrivée (Échap annule, Retour arrière retire le dernier point).':selLink?'Cliquez-glissez sur la liaison pour ajouter un point, double-clic sur un point pour le retirer. Suppr supprime la liaison.':'Tracé libre : cliquez sur un nœud de départ, ou sur une liaison pour modifier son tracé.');
 }
 function setMode(m){mode=m;autoPath=0;sp=[];cr=null;$('#cb').style.display='none';from=null;pp=[];cur=null;['sel','node','link','path','scale'].forEach(x=>$('#m-'+x).classList.toggle('on',x==m));$('#sv').style.cursor=m=='sel'?'grab':'crosshair';draw()}
@@ -411,7 +412,17 @@ function resetConn(c){delete CI[c];try{localStorage.setItem('fibre:conn',JSON.st
 let nq='',hl=null;
 function nlist(){const el=$('#nl');if(!el)return;const q=nq.trim().toLowerCase(),a=[...S.nodes].filter(n=>!q||n.n.toLowerCase().includes(q)).sort((a,b)=>a.n.localeCompare(b.n,'fr',{numeric:true}));
  el.innerHTML=a.length?a.map(n=>`<div class="r"><span style="flex:1;cursor:pointer;padding:4px 2px" onclick="goNode('${n.id}')">${esc(n.n)}</span><span class="hint">${S.links.filter(l=>l.a==n.id||l.b==n.id).length} liais.</span><button onclick="openBaie('${n.id}')" title="Ouvrir la baie">📂</button></div>`).join(''):'<p class="hint">Aucun nœud.</p>'}
-function goNode(id){const n=nd(id);if(!n)return;const r=sv.getBoundingClientRect();view.k=Math.max(view.k,.5);view.x=r.width/2-n.x*view.k;view.y=r.height/2-n.y*view.k;hl=id;draw();setTimeout(()=>{hl=null;draw()},1600)}
+/* ---------- Mise en évidence des liaisons ---------- */
+let showAll=false,hov=null,hovL=null,fx=null,fxD=null;try{showAll=localStorage.getItem('fibre:showAll')=='1'}catch(e){}
+function setShowAll(v){showAll=v;try{localStorage.setItem('fibre:showAll',v?'1':'0')}catch(e){}side();applyFocus()}
+function applyFocus(){const ly=$('#ly');if(!ly)return;ly.classList.toggle('fade',!showAll);const f=hov||fx;
+ ly.querySelectorAll('.lk').forEach(e=>e.classList.toggle('on',(!!f&&(e.dataset.a==f||e.dataset.b==f))||e.dataset.id==selLink||e.dataset.id==hovL));
+ ly.querySelectorAll('g[data-n]').forEach(g=>g.classList.toggle('fo',!showAll&&g.dataset.n==f))}
+sv.addEventListener('pointerover',e=>{if(e.pointerType=='touch')return;const n=e.target.closest('[data-n]'),l=e.target.closest('[data-l]'),a=n?n.dataset.n:null,b=l?l.dataset.l:null;if(a!==hov||b!==hovL){hov=a;hovL=b;applyFocus()}});
+sv.addEventListener('pointerleave',()=>{if(hov||hovL){hov=hovL=null;applyFocus()}});
+sv.addEventListener('pointerdown',e=>{fxD=e.target.closest('[data-n],[data-l],[data-h]')?null:{x:e.clientX,y:e.clientY}},true);
+sv.addEventListener('pointerup',e=>{if(fxD&&fx&&Math.hypot(e.clientX-fxD.x,e.clientY-fxD.y)<6){fx=null;applyFocus()}fxD=null});
+function goNode(id){fx=id;const n=nd(id);if(!n)return;const r=sv.getBoundingClientRect();view.k=Math.max(view.k,.5);view.x=r.width/2-n.x*view.k;view.y=r.height/2-n.y*view.k;hl=id;draw();setTimeout(()=>{hl=null;draw()},1600)}
 function hideDd(){document.querySelectorAll('.dm').forEach(m=>m.style.display='none')}
 function dd(e,k){e.stopPropagation();const m=$('#dm-'+k),open=m.style.display=='block';hideDd();hideCm();if(open)return;const r=e.currentTarget.getBoundingClientRect();m.style.display='block';m.style.top=(r.bottom+4)+'px';m.style.left=Math.max(4,Math.min(r.left,innerWidth-m.offsetWidth-4))+'px'}
 function hideCm(){$('#cm').style.display='none'}
@@ -476,6 +487,7 @@ function side(){
  let h='<h3>Types de liaison</h3>';
  S.types.forEach((t,i)=>h+=`<div class="r"><input type="radio" name="lt" title="Type utilisé pour les nouvelles liaisons" ${i==linkType?'checked':''} onchange="linkType=${i}"><input type="color" value="${t.c}" onchange="S.types[${i}].c=this.value;touch()"><input value="${esc(t.n)}" onchange="S.types[${i}].n=this.value;touch()"><button onclick="delType(${i})" title="Supprimer">×</button><span class="hint" style="width:100%">${tl(i)}</span></div>`);
  h+='<button onclick="S.types.push({n:\'Nouveau type\',c:\'#f59e0b\'});touch()">+ Type</button><p class="hint">Le bouton radio choisit le type des prochaines liaisons.</p>';
+ h+=`<div class="r"><label><input type="checkbox" ${showAll?'checked':''} onchange="setShowAll(this.checked)"> Afficher tous les réseaux en même temps</label></div><p class="hint" style="margin-top:0">${showAll?'Toutes les liaisons sont affichées en pleine couleur.':(T?'Liaisons estompées : ouvrez un nœud pour mettre ses liaisons en évidence ; touchez le plan à vide pour revenir.':'Liaisons estompées : survolez un nœud pour mettre ses liaisons en évidence.')}</p>`;
  const l=curL();
  if(l)h+=`<h3>Liaison sélectionnée</h3><div class="r"><b>${esc(nm(l.a))} ⟷ ${esc(nm(l.b))}</b></div><p class="hint" style="margin:0">${S.mpp?'Longueur : '+fm(llen(l))+' ('+((l.pts||[]).length+1)+' segment'+((l.pts||[]).length?'s':'')+')':'Définissez l’échelle pour mesurer la longueur.'}</p><div class="r">${sel(S.types.map(t=>t.n),(S.types[l.t]||{}).n,'onchange="curL().t=this.selectedIndex;touch()"')}</div><div class="r"><input placeholder="Étiquette (ex. 48 FO OS2)" value="${esc(l.lb)}" oninput="curL().lb=this.value;draw();persist()"></div><div class="r"><button onclick="(curL().pts||[]).pop();touch()">− Dernier point</button><button onclick="curL().pts=[];touch()">Redresser</button></div><p class="hint">Mode « Tracé libre » : cliquez sur la liaison sélectionnée et glissez pour créer un point. Mode « Sélection » : double-clic sur la liaison. Dans les deux : glissez un point pour le déplacer, double-clic sur un point pour le retirer.</p><button class="d" onclick="S.links=S.links.filter(x=>x.id!=selLink);selLink=null;touch()">Supprimer la liaison</button>`;
  h+=`<h3>Nœuds (${S.nodes.length})</h3><input id="nq" placeholder="Rechercher un nœud…" value="${esc(nq)}" oninput="nq=this.value;nlist()" style="width:100%"><div id="nl"></div>`;
@@ -489,7 +501,7 @@ function delType(i){if(S.types.length<2)return;S.types.splice(i,1);S.links.forEa
 function modal(h){$('#md').innerHTML=h;$('#ov').style.display='flex'}
 function closeM(){$('#ov').style.display='none';bn=null;touch()}
 let nn=null,autoPath=0,sp=[],cr=null,bgPrev=null;
-function openBaie(id){nn=nd(id);if(!nn.baies){nn.baies=[{id:uid(),n:'Baie 1',units:nn.units||[]}];delete nn.units}if(!nn.baies.length)nn.baies.push({id:uid(),n:'Baie 1',units:[]});bn=nn.baies[0];su=null;delNode.c=0;delBaie.c=0;
+function openBaie(id){fx=id;nn=nd(id);if(!nn.baies){nn.baies=[{id:uid(),n:'Baie 1',units:nn.units||[]}];delete nn.units}if(!nn.baies.length)nn.baies.push({id:uid(),n:'Baie 1',units:[]});bn=nn.baies[0];su=null;delNode.c=0;delBaie.c=0;
  modal(`<div class="mh"><input class="ttl" value="${esc(nn.n)}" onchange="nn.n=this.value;touch()"><button onclick="openReport(nn.id)" title="Fiche à imprimer ou télécharger">🖨 Fiche</button><button onclick="closeM()">✕</button></div><div class="bd"><div id="rack"></div><div id="tb" class="sc"></div></div>`);rack();tbl()}
 function pairs(u){let h='';for(let i=0;i<u.p;i++)h+=`<i class="${(u.rows[i]||{}).r?'f':''}"></i>`;return h}
 function rack(){
